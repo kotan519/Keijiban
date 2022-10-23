@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/kotan519/bookings/pkg/config"
-	"github.com/kotan519/bookings/pkg/handlers"
-	"github.com/kotan519/bookings/pkg/render"
+	"github.com/kotan519/bookings/internal/config"
+	"github.com/kotan519/bookings/internal/handlers"
+	"github.com/kotan519/bookings/internal/render"
 	"log"
 	"net/http"
 	"time"
