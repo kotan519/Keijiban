@@ -3,13 +3,13 @@ package render
 import (
 	"bytes"
 	"fmt"
-	"github.com/justinas/nosurf"
-	"github.com/kotan519/bookings/internal/config"
-	"github.com/kotan519/bookings/internal/models"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+	"github.com/justinas/nosurf"
+	"github.com/kotan519/keijiban/internal/config"
+	"github.com/kotan519/keijiban/internal/models"
 )
 
 var functions = template.FuncMap{}
@@ -21,7 +21,13 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.Flash = app.Session.PopString(r.Context(), "flash")
+	td.Error = app.Session.PopString(r.Context(), "error")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.CSRFToken = nosurf.Token(r)
+	if app.Session.Exists(r.Context(), "user_id") {
+		td.IsAuthenticated = 1
+	}
 	return td
 }
 
@@ -62,10 +68,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 	// get all of the named *.page.tmpl from ./templates
 	// 一致するパス名を返すGlob	pages→ページのパス名(複数)配列 ["./templates/home.page.tmpl", "./templates/about.page.tmpl"]
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
-	if err != nil {
-		return myCache, err
-	}
+	pages, _ := filepath.Glob("./templates/*.page.tmpl")
 
 	// range through all this files ending with *.page.tmpl
 	// ページのパス名(1つずつ)配列要素をpageへ
@@ -73,24 +76,15 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		// パスの最後の要素を返す(name = home.page.tmpl)
 		name := filepath.Base(page)
 		// template.New(名前)→PaeseFiles(ページ)に名前を入れ込む
-		ts, err := template.New(name).ParseFiles(page)
-		if err != nil {
-			return myCache, err
-		}
+		ts, _ := template.New(name).ParseFiles(page)
 
 		// 一致するパス名を返すGlob
-		matches, err := filepath.Glob("./templates/*.layout.tmpl")
-		if err != nil {
-			return myCache, err
-		}
+		matches, _ := filepath.Glob("./templates/*.layout.tmpl")
 
 		if len(matches) > 0 {
 			// ファイルの取り込み
 			// tsはlayout.tmplを読み込んだもの
-			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
-			if err != nil {
-				return myCache, err
-			}
+			ts, _ = ts.ParseGlob("./templates/*.layout.tmpl")
 		}
 
 		myCache[name] = ts

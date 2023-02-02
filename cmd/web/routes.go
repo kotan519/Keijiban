@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/kotan519/bookings/internal/config"
-	"github.com/kotan519/bookings/internal/handlers"
-	"net/http"
+	"github.com/kotan519/keijiban/internal/config"
+	"github.com/kotan519/keijiban/internal/handlers"
 )
 
 func routes(app *config.AppConfig) http.Handler {
@@ -14,21 +15,32 @@ func routes(app *config.AppConfig) http.Handler {
 
 	//パニックを吸収しスタックトレースを表示する(panic抑制)
 	mux.Use(middleware.Recoverer)
-	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
-	mux.Get("/", handlers.Repo.Home)
-	mux.Get("/about", handlers.Repo.About)
-	mux.Get("/generals-quarters", handlers.Repo.Generals)
-	mux.Get("/majors-suite", handlers.Repo.Majors)
+	mux.Route("/auth", func(mux chi.Router){
+		mux.Use(Auth)
+		// Threadのリスト画面
+		mux.Get("/threadlist", handlers.Repo.ThreadListScreen)
+		mux.Post("/threadlist", handlers.Repo.PostThreadNumber)
+		// Threadの内容画面
+		mux.Get("/thread", handlers.Repo.ThreadScreen)
+		mux.Post("/thread", handlers.Repo.PostWriteComment)
 
-	mux.Get("/search-availability", handlers.Repo.Availability)
-	mux.Post("/search-availability", handlers.Repo.PostAvailability)
-	mux.Post("/search-availability-json", handlers.Repo.AvailabilityJSON)
+		// Threadの書き込み
+		mux.Get("/write-thread-tokumei", handlers.Repo.WriteThread)
+		mux.Post("/write-thread-tokumei", handlers.Repo.PostWriteThreadsData)
+	})
+	
 
-	mux.Get("/contact", handlers.Repo.Contact)
+	mux.Route("/user", func(mux chi.Router){
+		mux.Get("/login", handlers.Repo.ShowLogin)
+		mux.Post("/login", handlers.Repo.PostShowLogin)
+		mux.Get("/logout", handlers.Repo.Logout)
 
-	mux.Get("/make-reservation", handlers.Repo.Reservation)
+		mux.Get("/signup", handlers.Repo.Signup)
+		mux.Post("/signup", handlers.Repo.PostSignup)
+	})
+	
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

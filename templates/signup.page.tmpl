@@ -1,0 +1,58 @@
+{{template "base" .}}
+
+
+{{define "content"}}
+
+<div class="form-wrapper">
+    <h1>Sign Up</h1>
+    <form method="post" action="/user/signup">
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+        <div class="form-group mt-3">
+            <label for="username">ユーザーネーム</label>
+            {{with .Form.Errors.Get "username"}}
+                <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control"
+                   id="username" autocomplete="off" type="text"
+                   name="username" value="" required>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="email">メールアドレス</label>
+            {{with .Form.Errors.Get "email"}}
+                <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control"
+                   id="email" autocomplete="off" type="text"
+                   name="email" value="" required>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="password">パスワード</label>
+            {{with .Form.Errors.Get "password"}}
+                <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control"
+                   id="password" autocomplete="off" type="text"
+                   name="password" value="" required>
+        </div>
+
+        <hr>
+
+        <div align="center">
+            <input type="submit" class="btn senibutton" value="登録">
+        </div>
+        
+        
+        
+        <div class="form-footer">
+            <p><a href="/user/login">ログインの方はこちら</a></p>
+        </div>
+        
+        
+
+    </form>
+</div>
+
+{{end}}

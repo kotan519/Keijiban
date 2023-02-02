@@ -1,0 +1,53 @@
+{{template "base" .}}
+
+{{define "content"}}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+
+            <h1>スレッドを立てよう</h1>
+            <!--<p><strong>Reservation Details</strong></p>-->
+            <hr>
+
+            {{$res := index .Data "threadsdata"}}
+
+            <form method="post" action="" class="" novalidate>
+                <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+
+
+                <div class="writeform">
+                    <label for="namelabel"><strong>タイトル</strong></label>
+                    <input placeholder="例) テストどうだった？" type="text" name="name" id="titlelabel" value="{{$res.Title}}"
+                        class="writeform" required autocomplete="off">
+                </div>
+
+                <br>
+
+                <div class="writeform">
+                    <label for="gradelabel"><strong>本文</strong></label>
+                    <textarea placeholder="例) 赤点3つだったけどみんなどう？" type="text" name="body" id="textlabel"
+                        value="{{$res.Text}}" rows="10" cols="35" class="writeform" required
+                        autocomplete="off"></textarea>
+                </div>
+
+                <br>
+
+                <div align="center">
+                    <input type="submit" class="btn senibutton" value="投稿">
+                </div>
+                <hr>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row">
+    </div>
+</div>
+
+
+{{end}}

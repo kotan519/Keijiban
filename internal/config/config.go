@@ -1,9 +1,10 @@
 package config
 
 import (
-	"github.com/alexedwards/scs/v2"
 	"html/template"
 	"log"
+
+	"github.com/alexedwards/scs/v2"
 )
 
 // AppConfig holds the application configs
@@ -11,6 +12,6 @@ type AppConfig struct {
 	UseCache      bool
 	TemplateCache map[string]*template.Template
 	InfoLog       *log.Logger
-	InProduction  bool
+	ErrorLog	  *log.Logger
 	Session       *scs.SessionManager
 }
