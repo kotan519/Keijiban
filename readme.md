@@ -1,6 +1,4 @@
-# Bookings and Reservation
-
-This is the repository gor my bookings and reservation projects.
+# Kosen Keijiban
 
 - Built in Go version 1.19
 - Uses the [chi](https://github.com/go-chi/chi/v5) router
